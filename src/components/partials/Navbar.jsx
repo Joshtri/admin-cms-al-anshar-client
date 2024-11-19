@@ -5,7 +5,7 @@ import { NavDropdown } from 'react-bootstrap';
 
 function Navbar() {
   return (
-   <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+   <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           CMS | Masjid Al-Anshar
@@ -46,7 +46,7 @@ function Navbar() {
                 <NavDropdown.Item as={NavLink} to="/data-pengumuman">
                     Data Pengumuman
                 </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="/galeri-kegiatan">
+                <NavDropdown.Item as={NavLink} to="/daftar-galeri">
                     Galeri Kegiatan
                 </NavDropdown.Item>
             </NavDropdown>

@@ -1,27 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; // Import ikon
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Layout from '../Layout';
 import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 import { Link } from 'react-router-dom';
+import api from '../../config/api'; // Import Axios instance
 
 function ArticleListPage() {
-  const articles = [
-    { id: 1, title: 'Article 1', author: 'Author 1', date: '2024-11-01' },
-    { id: 2, title: 'Article 2', author: 'Author 2', date: '2024-11-02' },
-    { id: 3, title: 'Article 3', author: 'Author 3', date: '2024-11-03' },
-  ];
-
+  // State untuk artikel
+  const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const filteredArticles = articles.filter(article =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Ambil artikel dari API
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await api.get('/article'); // Endpoint API
 
+        // Pastikan respons berupa array
+        const articlesData = Array.isArray(response.data) ? response.data : response.data.data;
+        setArticles(articlesData);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        alert('Gagal mengambil data artikel.');
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  // Filter artikel berdasarkan pencarian
+  const filteredArticles = Array.isArray(articles)
+    ? articles.filter(article =>
+        article.judul.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  // Pagination
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedArticles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
@@ -31,34 +50,45 @@ function ArticleListPage() {
     { label: 'Daftar Artikel', href: '/daftar-artikel', active: true },
   ];
 
-  const handleDelete = (id) => {
-    console.log(`Hapus artikel dengan ID: ${id}`);
-    // Tambahkan logika hapus data di sini
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/article/${id}`); // Endpoint untuk menghapus artikel
+      alert('Artikel berhasil dihapus.');
+      setArticles(prevArticles => prevArticles.filter(article => article.id !== id));
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      alert('Gagal menghapus artikel.');
+    }
   };
 
   const handleEdit = (id) => {
     console.log(`Edit artikel dengan ID: ${id}`);
-    // Tambahkan logika edit data di sini
+    // Tambahkan navigasi ke halaman edit
   };
 
   const handleDetail = (id) => {
     console.log(`Detail artikel dengan ID: ${id}`);
-    // Tambahkan logika detail data di sini
+    // Tambahkan navigasi ke halaman detail
   };
 
   return (
     <Layout>
       <Container>
+        {/* Breadcrumbs */}
         <Row className="my-4">
           <Col>
             <Breadcrumbs items={breadcrumbItems} />
           </Col>
         </Row>
+
+        {/* Header */}
         <Row className="mb-3">
           <Col>
             <h1>Daftar Artikel</h1>
           </Col>
         </Row>
+
+        {/* Search and Add Button */}
         <Row className="mb-3">
           <Col md={6}>
             <Form.Control
@@ -70,20 +100,31 @@ function ArticleListPage() {
           </Col>
           <Col md={6} className="text-end">
             <Link to="/tambah-artikel" className="btn btn-primary">
-            Tambah Artikel Baru
+              Tambah Artikel Baru
             </Link>
-            {/* <Button href='/tambah-artikel' variant="primary"></Button> */}
           </Col>
         </Row>
+
+        {/* Data Table */}
         <Row>
           <Col>
             <DataTable
-              headers={['#', 'Title', 'Author', 'Date', 'Actions']}
+              headers={['#', 'Judul', 'Konten', 'Deskripsi Singkat', 'Cover', 'Status', 'Actions']}
               data={paginatedArticles.map((article, index) => ({
                 '#': startIndex + index + 1,
-                Title: article.title,
-                Author: article.author,
-                Date: article.date,
+                Judul: article.judul,
+                Konten: `${article.konten.slice(0, 50)}...`,
+                'Deskripsi Singkat': article.deskripsiSingkat || 'Tidak Ada',
+                Cover: article.coverImageUrl ? (
+                  <img
+                    src={article.coverImageUrl}
+                    alt="Cover"
+                    style={{ width: '50px', height: '50px' }}
+                  />
+                ) : (
+                  'Tidak Ada'
+                ),
+                Status: article.statusArtikel,
                 Actions: (
                   <div className="d-flex justify-content-evenly">
                     <Button
@@ -116,6 +157,8 @@ function ArticleListPage() {
             />
           </Col>
         </Row>
+
+        {/* Pagination */}
         <Row>
           <Col className="d-flex justify-content-center">
             <Pagination

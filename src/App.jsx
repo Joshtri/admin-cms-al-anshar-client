@@ -29,7 +29,7 @@ function App() {
 
           <Route path='/data-pengumuman' element={<PengumumanListPage/>}/>
 
-          <Route path='/galeri-kegiatan' element={<GalleryListPage/>}/>
+          <Route path='/daftar-galeri' element={<GalleryListPage/>}/>
           <Route path='/tambah-galeri' element={<GalleryAddPage/>}/>
 
         </Routes>

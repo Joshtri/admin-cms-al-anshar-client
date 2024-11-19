@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout';
-import api from '../../config/api'; // Import instance Axios
+import api from '../../config/api'; // Import Axios instance
 
 function GalleryAddPage() {
   const navigate = useNavigate();
@@ -64,18 +64,26 @@ function GalleryAddPage() {
   return (
     <Layout>
       <Container>
+        {/* Breadcrumbs */}
+        <Row className="my-4">
+          <Col>
+            <Breadcrumb>
+              <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+              <Breadcrumb.Item href="/daftar-galeri">Daftar Galeri</Breadcrumb.Item>
+              <Breadcrumb.Item active>Tambah Galeri Baru</Breadcrumb.Item>
+            </Breadcrumb>
+          </Col>
+        </Row>
 
         {/* Header */}
         <Row className="mb-4">
-
           <Col className="d-flex align-items-center justify-content-between">
-
-            <Button variant="secondary" onClick={() => navigate(-1)}>
+            <Button variant="secondary" onClick={() => navigate('/daftar-galeri')}>
               Kembali
             </Button>
           </Col>
-            <hr />
-          <h3 className='text-center'>Tambah Galeri Baru</h3>
+          <h3 className="text-center mt-3">Tambah Galeri Baru</h3>
+          <hr />
         </Row>
 
         {/* Form */}
