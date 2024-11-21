@@ -1,27 +1,44 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; // Ikon untuk aksi
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { FaEye, FaEdit, FaTrash, FaFilePdf } from 'react-icons/fa';
 import Layout from '../Layout';
 import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function PengumumanListPage() {
-  // Dummy data untuk pengumuman
-  const announcements = [
-    { id: 1, title: 'Pengumuman 1', author: 'Admin 1', date: '2024-11-01' },
-    { id: 2, title: 'Pengumuman 2', author: 'Admin 2', date: '2024-11-02' },
-    { id: 3, title: 'Pengumuman 3', author: 'Admin 3', date: '2024-11-03' },
-  ];
-
-  // State untuk pencarian dan pagination
+  const [announcements, setAnnouncements] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const itemsPerPage = 5;
 
+  // Fetch data from API
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:5000/api/v1/pengumuman');
+        console.log('API Response:', response.data); // Log API response
+        setAnnouncements(response.data.data || []); // Default to empty array if no data
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to fetch pengumuman.');
+        setLoading(false);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
   // Filter pengumuman berdasarkan pencarian
-  const filteredAnnouncements = announcements.filter(announcement =>
-    announcement.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAnnouncements = announcements.filter((announcement) =>
+    (announcement.judul_pengumuman || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Pagination
@@ -39,10 +56,19 @@ function PengumumanListPage() {
   ];
 
   // Aksi tombol
-  const handleDelete = (id) => {
-    console.log(`Hapus pengumuman dengan ID: ${id}`);
-    // Tambahkan logika hapus data
+  const handleDelete = async (id) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus pengumuman ini?")) {
+      try {
+        await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/v1/pengumuman/${id}`);
+        setAnnouncements(announcements.filter((announcement) => announcement._id !== id));
+        alert("Pengumuman berhasil dihapus.");
+      } catch (error) {
+        console.error("Error menghapus pengumuman:", error.message);
+        alert("Gagal menghapus pengumuman. Silakan coba lagi.");
+      }
+    }
   };
+  
 
   const handleEdit = (id) => {
     console.log(`Edit pengumuman dengan ID: ${id}`);
@@ -53,6 +79,32 @@ function PengumumanListPage() {
     console.log(`Detail pengumuman dengan ID: ${id}`);
     // Tambahkan logika detail data
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <Container>
+          <Breadcrumbs items={breadcrumbItems} />
+          <div className="text-center my-5">
+            <Spinner animation="border" />
+          </div>
+        </Container>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <Container>
+          <Breadcrumbs items={breadcrumbItems} />
+          <Alert variant="danger" className="text-center my-5">
+            {error}
+          </Alert>
+        </Container>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -73,22 +125,39 @@ function PengumumanListPage() {
               type="text"
               placeholder="Cari Pengumuman..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </Col>
           <Col md={6} className="text-end">
-            <Button variant="primary">Tambah Pengumuman Baru</Button>
+            <Link className="btn btn-primary" to="/tambah-pengumuman">
+              Tambah Pengumuman Baru
+            </Link>
           </Col>
         </Row>
         <Row>
           <Col>
             <DataTable
-              headers={['#', 'Title', 'Author', 'Date', 'Actions']}
+              headers={['#', 'Title', 'Deskripsi', 'Date', 'Berkas (PDF)', 'Actions']}
               data={paginatedAnnouncements.map((announcement, index) => ({
                 '#': startIndex + index + 1,
-                Title: announcement.title,
-                Author: announcement.author,
-                Date: announcement.date,
+                Title: announcement.judul_pengumuman || '(No Title)',
+                Deskripsi: announcement.deskripsi_pengumuman || '(No Description)',
+                Date: announcement.tanggal_pengumuman || '(No Date)',
+                Berkas: announcement.berkas_pengumuman_pdf ? (
+                  <div className="d-flex justify-content-center">
+                    <a
+                      href={announcement.berkas_pengumuman_pdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Lihat Berkas"
+                    >
+                      <FaFilePdf color="red" className="fs-4" /> {/* Tambahkan class fs-4 untuk ukuran besar */}
+                    </a>
+                  </div>
+                ) : (
+                  <div className="d-flex justify-content-center">(No File)</div>
+                ),
+                
                 Actions: (
                   <div className="d-flex justify-content-evenly">
                     <Button
@@ -110,7 +179,7 @@ function PengumumanListPage() {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => handleDelete(announcement.id)}
+                      onClick={() => handleDelete(announcement._id)}
                       title="Hapus"
                     >
                       <FaTrash />

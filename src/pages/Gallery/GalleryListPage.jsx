@@ -1,46 +1,45 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Form, Button, Image, Modal } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Layout from '../Layout';
 import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
-import { Link } from 'react-router-dom';
 
 function GalleryListPage() {
-  // Dummy data untuk galeri
-  const galleries = [
-    {
-      id: 1,
-      image: 'https://via.placeholder.com/100',
-      title: 'Gallery 1',
-      description: 'This is gallery 1',
-      date: '2024-11-01',
-    },
-    {
-      id: 2,
-      image: 'https://via.placeholder.com/100',
-      title: 'Gallery 2',
-      description: 'This is gallery 2',
-      date: '2024-11-02',
-    },
-    {
-      id: 3,
-      image: 'https://via.placeholder.com/100',
-      title: 'Gallery 3',
-      description: 'This is gallery 3',
-      date: '2024-11-03',
-    },
-  ];
-
-  // State untuk pencarian dan pagination
+  const [galleries, setGalleries] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedGallery, setSelectedGallery] = useState(null);
+
   const itemsPerPage = 5;
+  const navigate = useNavigate();
+
+  // Fetch data dari API
+  useEffect(() => {
+    const fetchGalleries = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri`);
+        setGalleries(response.data.data);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError('Gagal memuat data galeri.');
+        setLoading(false);
+      }
+    };
+    fetchGalleries();
+  }, []);
 
   // Filter galeri berdasarkan pencarian
-  const filteredGalleries = galleries.filter(gallery =>
-    gallery.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredGalleries = galleries.filter((gallery) =>
+    gallery.caption.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Pagination
@@ -51,34 +50,32 @@ function GalleryListPage() {
     startIndex + itemsPerPage
   );
 
-  // Breadcrumbs items
-  const breadcrumbItems = [
-    { label: 'Beranda', href: '/dashboard', active: false },
-    { label: 'Daftar Galeri', href: '/daftar-galeri', active: true },
-  ];
-
-  // Aksi tombol
   const handleDelete = (id) => {
-    console.log(`Hapus galeri dengan ID: ${id}`);
-    // Tambahkan logika hapus data
+    setSelectedGallery(id);
+    setShowModal(true);
   };
 
-  const handleEdit = (id) => {
-    console.log(`Edit galeri dengan ID: ${id}`);
-    // Tambahkan logika edit data
-  };
-
-  const handleDetail = (id) => {
-    console.log(`Detail galeri dengan ID: ${id}`);
-    // Tambahkan logika detail data
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri/${selectedGallery}`);
+      setGalleries(galleries.filter((gallery) => gallery._id !== selectedGallery));
+      setShowModal(false);
+    } catch (err) {
+      console.error('Gagal menghapus galeri:', err);
+      setShowModal(false);
+    }
   };
 
   return (
     <Layout>
-      <Container>
         <Row className="my-4">
           <Col>
-            <Breadcrumbs items={breadcrumbItems} />
+            <Breadcrumbs
+              items={[
+                { label: 'Beranda', href: '/dashboard', active: false },
+                { label: 'Daftar Galeri', href: '/daftar-galeri', active: true },
+              ]}
+            />
           </Col>
         </Row>
         <Row className="mb-3">
@@ -92,37 +89,39 @@ function GalleryListPage() {
               type="text"
               placeholder="Cari Galeri..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </Col>
           <Col md={6} className="text-end">
-            <Link to='/tambah-galeri' className="btn btn-primary">Tambah Galeri Baru</Link>
+            <Link to="/tambah-galeri" className="btn btn-primary">
+              Tambah Galeri Baru
+            </Link>
           </Col>
         </Row>
         <Row>
           <Col>
             <DataTable
-              headers={['#', 'Image', 'Title', 'Description', 'Date', 'Actions']}
+              headers={['#', 'Image', 'Caption', 'Description', 'Date', 'Actions']}
               data={paginatedGalleries.map((gallery, index) => ({
                 '#': startIndex + index + 1,
                 Image: (
                   <Image
-                    src={gallery.image}
-                    alt={gallery.title}
+                    src={gallery.imageGaleri}
+                    alt={gallery.caption}
                     thumbnail
                     width={50}
                     height={50}
                   />
                 ),
-                Title: gallery.title,
-                Description: gallery.description,
-                Date: gallery.date,
+                Caption: gallery.caption,
+                Description: gallery.deskripsi_caption,
+                Date: new Date(gallery.tanggal_caption).toLocaleDateString(),
                 Actions: (
                   <div className="d-flex justify-content-evenly">
                     <Button
                       variant="info"
                       size="sm"
-                      onClick={() => handleDetail(gallery.id)}
+                      onClick={() => navigate(`/galeri/${gallery._id}`)}
                       title="Detail"
                     >
                       <FaEye />
@@ -130,7 +129,7 @@ function GalleryListPage() {
                     <Button
                       variant="warning"
                       size="sm"
-                      onClick={() => handleEdit(gallery.id)}
+                      onClick={() => navigate(`/galeri/edit/${gallery._id}`)}
                       title="Edit"
                     >
                       <FaEdit />
@@ -138,7 +137,7 @@ function GalleryListPage() {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => handleDelete(gallery.id)}
+                      onClick={() => handleDelete(gallery._id)}
                       title="Hapus"
                     >
                       <FaTrash />
@@ -158,7 +157,24 @@ function GalleryListPage() {
             />
           </Col>
         </Row>
-      </Container>
+
+        {/* Konfirmasi Modal */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Konfirmasi Hapus</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Apakah Anda yakin ingin menghapus galeri ini?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Batal
+            </Button>
+            <Button variant="danger" onClick={confirmDelete}>
+              Hapus
+            </Button>
+          </Modal.Footer>
+        </Modal>
     </Layout>
   );
 }

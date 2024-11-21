@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Layout from '../Layout';
 import Breadcrumbs from '../../components/BreadCrumbs';
@@ -73,7 +73,6 @@ function ArticleListPage() {
 
   return (
     <Layout>
-      <Container>
         {/* Breadcrumbs */}
         <Row className="my-4">
           <Col>
@@ -168,7 +167,7 @@ function ArticleListPage() {
             />
           </Col>
         </Row>
-      </Container>
+
     </Layout>
   );
 }
