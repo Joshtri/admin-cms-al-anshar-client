@@ -1,14 +1,14 @@
 import React from 'react'
 import Layout from '../Layout'
 import { Row, Col } from 'react-bootstrap'
-import Breadcrumbs from '../../components/BreadCrumbs';
+// import Breadcrumbs from '../../components/BreadCrumbs';
 
 
 
-const breadcrumbItems = [
-  { label: 'Beranda', href: '/dashboard', active: false },
-  { label: 'Daftar Artikel', href: '/daftar-artikel', active: true },
-];
+// const breadcrumbItems = [
+//   { label: 'Beranda', href: '/dashboard', active: false },
+//   { label: 'Daftar Artikel', href: '/daftar-artikel', active: true },
+// ];
 
 
 
