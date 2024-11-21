@@ -13,7 +13,7 @@ function Layout({ children }) {
                 {children}
               </Container>
             </div>
-        <Footer/>
+        {/* <Footer/> */}
     </>
   );
 }

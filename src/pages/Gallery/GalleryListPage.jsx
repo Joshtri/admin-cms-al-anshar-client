@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Button, Image, Modal } from 'react-bootstrap';
+import { Row, Col, Form, Button, Image, Modal, Breadcrumb } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../Layout';
-// import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 
 function GalleryListPage() {
-  const [galleries, setGalleries] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [selectedGallery, setSelectedGallery] = useState(null);
+  const [galleries, setGalleries] = useState([]); // State galeri
+  const [searchQuery, setSearchQuery] = useState(''); // State pencarian
+  const [currentPage, setCurrentPage] = useState(1); // State halaman pagination
+  const [loading, setLoading] = useState(true); // State loading
+  const [error, setError] = useState(''); // State error
+  const [showModal, setShowModal] = useState(false); // State modal konfirmasi
+  const [selectedGallery, setSelectedGallery] = useState(null); // ID galeri yang akan dihapus
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 5; // Jumlah item per halaman
   const navigate = useNavigate();
 
   // Fetch data dari API
@@ -26,7 +25,7 @@ function GalleryListPage() {
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri`);
-        setGalleries(response.data.data);
+        setGalleries(response.data.data); // Set data galeri ke state
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -50,56 +49,69 @@ function GalleryListPage() {
     startIndex + itemsPerPage
   );
 
+  // Tampilkan modal konfirmasi
   const handleDelete = (id) => {
-    setSelectedGallery(id);
-    setShowModal(true);
+    setSelectedGallery(id); // Set ID galeri yang akan dihapus
+    setShowModal(true); // Tampilkan modal konfirmasi
   };
 
+  // Konfirmasi hapus galeri
   const confirmDelete = async () => {
     try {
+      // Kirim permintaan DELETE ke backend
       await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri/${selectedGallery}`);
+
+      // Perbarui daftar galeri
       setGalleries(galleries.filter((gallery) => gallery._id !== selectedGallery));
-      setShowModal(false);
+
+      setShowModal(false); // Sembunyikan modal
+      alert('Galeri berhasil dihapus!');
     } catch (err) {
       console.error('Gagal menghapus galeri:', err);
-      setShowModal(false);
+      alert('Terjadi kesalahan saat menghapus galeri.');
+      setShowModal(false); // Sembunyikan modal
     }
   };
 
   return (
     <Layout>
-        <Row className="my-4">
-          <Col>
-            {/* <Breadcrumbs
-              items={[
-                { label: 'Beranda', href: '/dashboard', active: false },
-                { label: 'Daftar Galeri', href: '/daftar-galeri', active: true },
-              ]}
-            /> */}
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col>
-            <h1>Daftar Galeri</h1>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Control
-              type="text"
-              placeholder="Cari Galeri..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </Col>
-          <Col md={6} className="text-end">
-            <Link to="/tambah-galeri" className="btn btn-primary">
-              Tambah Galeri Baru
-            </Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
+      {/* Breadcrumbs */}
+      <Row className="my-3">
+        <Col>
+          <Breadcrumb>
+            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+            <Breadcrumb.Item active>Daftar Galeri</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
+
+      <Row className="mb-3">
+        <Col>
+          <h1>Daftar Galeri</h1>
+        </Col>
+      </Row>
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Control
+            type="text"
+            placeholder="Cari Galeri..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Col>
+        <Col md={6} className="text-end">
+          <Link to="/tambah-galeri" className="btn btn-primary">
+            Tambah Galeri Baru
+          </Link>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
             <DataTable
               headers={['#', 'Image', 'Caption', 'Description', 'Date', 'Actions']}
               data={paginatedGalleries.map((gallery, index) => ({
@@ -146,35 +158,36 @@ function GalleryListPage() {
                 ),
               }))}
             />
-          </Col>
-        </Row>
-        <Row>
-          <Col className="d-flex justify-content-center">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </Col>
-        </Row>
+          )}
+        </Col>
+      </Row>
+      <Row>
+        <Col className="d-flex justify-content-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </Col>
+      </Row>
 
-        {/* Konfirmasi Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Konfirmasi Hapus</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Apakah Anda yakin ingin menghapus galeri ini?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Batal
-            </Button>
-            <Button variant="danger" onClick={confirmDelete}>
-              Hapus
-            </Button>
-          </Modal.Footer>
-        </Modal>
+      {/* Modal Konfirmasi */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Konfirmasi Hapus</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Apakah Anda yakin ingin menghapus galeri ini?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Batal
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Hapus
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Layout>
   );
 }

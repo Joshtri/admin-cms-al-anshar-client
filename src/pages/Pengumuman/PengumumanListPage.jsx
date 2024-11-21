@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner, Alert, Breadcrumb } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash, FaFilePdf } from 'react-icons/fa';
 import Layout from '../Layout';
 // import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 function PengumumanListPage() {
   const [announcements, setAnnouncements] = useState([]);
@@ -14,6 +14,8 @@ function PengumumanListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Hook untuk navigasi
+
 
   const itemsPerPage = 5;
 
@@ -73,6 +75,8 @@ function PengumumanListPage() {
   const handleEdit = (id) => {
     console.log(`Edit pengumuman dengan ID: ${id}`);
     // Tambahkan logika edit data
+    navigate(`/pengumuman/edit/${id}`); // Arahkan ke halaman edit
+
   };
 
   const handleDetail = (id) => {
@@ -97,6 +101,7 @@ function PengumumanListPage() {
     return (
       <Layout>
         <Container>
+          
           {/* <Breadcrumbs items={breadcrumbItems} /> */}
           <Alert variant="danger" className="text-center my-5">
             {error}
@@ -108,12 +113,15 @@ function PengumumanListPage() {
 
   return (
     <Layout>
-      <Container>
-        <Row className="my-4">
-          <Col>
-            {/* <Breadcrumbs items={breadcrumbItems} /> */}
-          </Col>
-        </Row>
+      {/* Breadcrumbs */}
+      <Row className="my-3">
+        <Col>
+          <Breadcrumb>
+            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+            <Breadcrumb.Item active>Data Pengumuman</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
         <Row className="mb-3">
           <Col>
             <h1>Daftar Pengumuman</h1>
@@ -160,18 +168,18 @@ function PengumumanListPage() {
                 
                 Actions: (
                   <div className="d-flex justify-content-evenly">
-                    <Button
+                    {/* <Button
                       variant="info"
                       size="sm"
                       onClick={() => handleDetail(announcement.id)}
                       title="Detail"
                     >
                       <FaEye />
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="warning"
                       size="sm"
-                      onClick={() => handleEdit(announcement.id)}
+                      onClick={() => handleEdit(announcement._id)}
                       title="Edit"
                     >
                       <FaEdit />
@@ -199,7 +207,6 @@ function PengumumanListPage() {
             />
           </Col>
         </Row>
-      </Container>
     </Layout>
   );
 }

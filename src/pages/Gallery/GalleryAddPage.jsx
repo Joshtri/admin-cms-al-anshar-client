@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Breadcrumb } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout';
 import api from '../../config/api'; // Import Axios instance
@@ -15,6 +15,7 @@ function GalleryAddPage() {
   });
 
   const [imageGaleri, setImageGaleri] = useState(null);
+  const [loading, setLoading] = useState(false); // State untuk loading
 
   // Handle perubahan input teks
   const handleInputChange = (e) => {
@@ -38,6 +39,8 @@ function GalleryAddPage() {
       return;
     }
 
+    setLoading(true); // Set loading ke true saat proses dimulai
+
     try {
       // Buat FormData untuk mengirimkan data ke backend
       const formDataToSend = new FormData();
@@ -58,6 +61,8 @@ function GalleryAddPage() {
     } catch (error) {
       console.error('Error saat menambahkan galeri:', error);
       alert('Terjadi kesalahan saat menambahkan galeri.');
+    } finally {
+      setLoading(false); // Set loading ke false saat proses selesai
     }
   };
 
@@ -142,8 +147,25 @@ function GalleryAddPage() {
 
               {/* Tombol Submit */}
               <div className="text-center">
-                <Button variant="primary" type="submit">
-                  Simpan Galeri
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={loading} // Nonaktifkan tombol saat loading
+                >
+                  {loading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />{' '}
+                      Menyimpan...
+                    </>
+                  ) : (
+                    'Simpan Galeri'
+                  )}
                 </Button>
               </div>
             </Form>

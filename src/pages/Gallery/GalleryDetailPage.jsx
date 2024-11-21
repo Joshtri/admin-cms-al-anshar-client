@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../Layout';
-import { Row, Col, Card, Image, Spinner, Alert } from 'react-bootstrap';
-// import Breadcrumbs from '../../components/BreadCrumbs';
+import { Row, Col, Card, Image, Spinner, Alert, Breadcrumb, Button } from 'react-bootstrap';
 import axios from 'axios';
 
-const breadcrumbItems = [
-  { label: 'Beranda', href: '/dashboard', active: false },
-  { label: 'Daftar Galeri', href: '/daftar-galeri', active: false },
-  { label: 'Detail Galeri', href: '/daftar-galeri', active: true },
-];
-
 function GalleryDetailPage() {
-  const { id } = useParams(); // Get the gallery ID from the URL
+  const { id } = useParams(); // Ambil ID galeri dari URL
+  const navigate = useNavigate(); // Untuk navigasi kembali
   const [gallery, setGallery] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Fetch detail galeri
   useEffect(() => {
     const fetchGalleryDetail = async () => {
       try {
@@ -33,47 +28,70 @@ function GalleryDetailPage() {
     fetchGalleryDetail();
   }, [id]);
 
+  // Jika loading, tampilkan spinner
   if (loading) {
     return (
       <Layout>
-        {/* <Breadcrumbs items={breadcrumbItems} /> */}
-        <div className="text-center my-5">
+        <Row className="justify-content-center my-5">
           <Spinner animation="border" />
-        </div>
+        </Row>
       </Layout>
     );
   }
 
+  // Jika terjadi error, tampilkan pesan error
   if (error) {
     return (
       <Layout>
-        {/* <Breadcrumbs items={breadcrumbItems} /> */}
-        <Alert variant="danger" className="text-center my-5">
-          {error}
-        </Alert>
+        <Row className="justify-content-center my-5">
+          <Alert variant="danger" className="text-center">
+            {error}
+          </Alert>
+        </Row>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      {/* <Breadcrumbs items={breadcrumbItems} /> */}
-      <Row className="mt-4">
+      {/* Breadcrumbs */}
+      <Row className="my-3">
         <Col>
-          <h3 className="text-center mb-4">Detail Galeri</h3>
-          <Card className="border shadow p-3">
+          <Breadcrumb>
+            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+            <Breadcrumb.Item href="/daftar-galeri">Daftar Galeri</Breadcrumb.Item>
+            <Breadcrumb.Item active>Detail Galeri</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
+
+      {/* Header */}
+      <Row className="mb-4">
+        <Col>
+          <h3 className="text-center">Detail Galeri</h3>
+          <hr />
+        </Col>
+      </Row>
+
+      {/* Detail Galeri */}
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <Card className="border shadow-sm p-3">
             <Card.Body>
               <Row>
-                <Col md={4} className="text-center">
+                {/* Gambar Galeri */}
+                <Col md={5} className="text-center">
                   <Image
                     src={gallery.imageGaleri}
                     alt={gallery.caption}
                     fluid
-                    className="border rounded"
+                    className="border rounded mb-3"
                   />
                 </Col>
-                <Col md={8}>
-                  <h4>{gallery.caption}</h4>
+
+                {/* Informasi Galeri */}
+                <Col md={7}>
+                  <h4 className="mb-3">{gallery.caption}</h4>
                   <p>
                     <strong>Tanggal: </strong>
                     {new Date(gallery.tanggal_caption).toLocaleDateString()}
@@ -86,6 +104,13 @@ function GalleryDetailPage() {
               </Row>
             </Card.Body>
           </Card>
+
+          {/* Tombol Kembali */}
+          <div className="text-center mt-4">
+            <Button variant="secondary" onClick={() => navigate('/daftar-galeri')}>
+              Kembali
+            </Button>
+          </div>
         </Col>
       </Row>
     </Layout>

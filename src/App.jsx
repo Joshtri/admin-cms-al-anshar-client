@@ -13,6 +13,8 @@ import GalleryAddPage from './pages/Gallery/GalleryAddPage';
 import ArticleDetailPage from './pages/Articles/ArticleDetailPage';
 import GalleryDetailPage from './pages/Gallery/GalleryDetailPage';
 import PengumumanAddPage from './pages/Pengumuman/PengumumanAddPage';
+import PengumumanEditPage from './pages/Pengumuman/PengumumanEditPage';
+import GalleryEditPage from './pages/Gallery/GalleryEditPage';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -28,10 +30,13 @@ function App() {
           <Route path='/daftar-artikel' element={<ArticleListPage/>}/>
           <Route path='/tambah-artikel' element={<ArticleAddPage/>}/>
           <Route path='/galeri/:id' element={<GalleryDetailPage/>}/>
+          <Route path='/galeri/edit/:id' element={<GalleryEditPage/>}/>
 
 
           <Route path='/data-pengumuman' element={<PengumumanListPage/>}/>
           <Route path='/tambah-pengumuman' element={<PengumumanAddPage/>}/>
+          <Route path="/pengumuman/edit/:id" element={<PengumumanEditPage />} />
+
 
           <Route path='/daftar-galeri' element={<GalleryListPage/>}/>
           <Route path='/tambah-galeri' element={<GalleryAddPage/>}/>
