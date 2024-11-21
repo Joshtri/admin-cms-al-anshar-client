@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../Layout';
 import { Row, Col, Card, Image, Spinner, Alert } from 'react-bootstrap';
-import Breadcrumbs from '../../components/BreadCrumbs';
+// import Breadcrumbs from '../../components/BreadCrumbs';
 import axios from 'axios';
 
 const breadcrumbItems = [
@@ -36,7 +36,7 @@ function GalleryDetailPage() {
   if (loading) {
     return (
       <Layout>
-        <Breadcrumbs items={breadcrumbItems} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
         <div className="text-center my-5">
           <Spinner animation="border" />
         </div>
@@ -47,7 +47,7 @@ function GalleryDetailPage() {
   if (error) {
     return (
       <Layout>
-        <Breadcrumbs items={breadcrumbItems} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
         <Alert variant="danger" className="text-center my-5">
           {error}
         </Alert>
@@ -57,7 +57,7 @@ function GalleryDetailPage() {
 
   return (
     <Layout>
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
       <Row className="mt-4">
         <Col>
           <h3 className="text-center mb-4">Detail Galeri</h3>

@@ -4,7 +4,7 @@ import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../Layout';
-import Breadcrumbs from '../../components/BreadCrumbs';
+// import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 
@@ -70,12 +70,12 @@ function GalleryListPage() {
     <Layout>
         <Row className="my-4">
           <Col>
-            <Breadcrumbs
+            {/* <Breadcrumbs
               items={[
                 { label: 'Beranda', href: '/dashboard', active: false },
                 { label: 'Daftar Galeri', href: '/daftar-galeri', active: true },
               ]}
-            />
+            /> */}
           </Col>
         </Row>
         <Row className="mb-3">

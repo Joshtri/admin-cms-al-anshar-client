@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash, FaFilePdf } from 'react-icons/fa';
 import Layout from '../Layout';
-import Breadcrumbs from '../../components/BreadCrumbs';
+// import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 import axios from 'axios';
@@ -84,7 +84,7 @@ function PengumumanListPage() {
     return (
       <Layout>
         <Container>
-          <Breadcrumbs items={breadcrumbItems} />
+          {/* <Breadcrumbs items={breadcrumbItems} /> */}
           <div className="text-center my-5">
             <Spinner animation="border" />
           </div>
@@ -97,7 +97,7 @@ function PengumumanListPage() {
     return (
       <Layout>
         <Container>
-          <Breadcrumbs items={breadcrumbItems} />
+          {/* <Breadcrumbs items={breadcrumbItems} /> */}
           <Alert variant="danger" className="text-center my-5">
             {error}
           </Alert>
@@ -111,7 +111,7 @@ function PengumumanListPage() {
       <Container>
         <Row className="my-4">
           <Col>
-            <Breadcrumbs items={breadcrumbItems} />
+            {/* <Breadcrumbs items={breadcrumbItems} /> */}
           </Col>
         </Row>
         <Row className="mb-3">
