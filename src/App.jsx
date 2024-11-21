@@ -15,6 +15,7 @@ import GalleryDetailPage from './pages/Gallery/GalleryDetailPage';
 import PengumumanAddPage from './pages/Pengumuman/PengumumanAddPage';
 import PengumumanEditPage from './pages/Pengumuman/PengumumanEditPage';
 import GalleryEditPage from './pages/Gallery/GalleryEditPage';
+import ArticleEditPage from './pages/Articles/ArticleEditPage';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -29,8 +30,10 @@ function App() {
 
           <Route path='/daftar-artikel' element={<ArticleListPage/>}/>
           <Route path='/tambah-artikel' element={<ArticleAddPage/>}/>
-          <Route path='/galeri/:id' element={<GalleryDetailPage/>}/>
-          <Route path='/galeri/edit/:id' element={<GalleryEditPage/>}/>
+          <Route path='/artikel/:id' element={<ArticleDetailPage/>}/>
+          <Route path='/artikel/edit/:id' element={<ArticleEditPage/>}/>
+
+
 
 
           <Route path='/data-pengumuman' element={<PengumumanListPage/>}/>
@@ -40,6 +43,8 @@ function App() {
 
           <Route path='/daftar-galeri' element={<GalleryListPage/>}/>
           <Route path='/tambah-galeri' element={<GalleryAddPage/>}/>
+          <Route path='/galeri/:id' element={<GalleryDetailPage/>}/>
+          <Route path='/galeri/edit/:id' element={<GalleryEditPage/>}/>
 
         </Routes>
       </BrowserRouter>
