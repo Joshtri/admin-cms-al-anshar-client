@@ -22,7 +22,7 @@ function PengumumanListPage() {
     const fetchAnnouncements = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/v1/pengumuman');
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/pengumuman`);
         console.log('API Response:', response.data); // Log API response
         setAnnouncements(response.data.data || []); // Default to empty array if no data
         setLoading(false);
