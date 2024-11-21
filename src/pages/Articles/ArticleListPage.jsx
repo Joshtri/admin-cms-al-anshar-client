@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Layout from '../Layout';
-import Breadcrumbs from '../../components/BreadCrumbs';
+// import Breadcrumbs from '../../components/BreadCrumbs';
 import DataTable from '../../components/DataTable';
 import Pagination from '../../components/Pagination';
 import { Link } from 'react-router-dom';
@@ -45,10 +45,10 @@ function ArticleListPage() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedArticles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
 
-  const breadcrumbItems = [
-    { label: 'Beranda', href: '/dashboard', active: false },
-    { label: 'Daftar Artikel', href: '/daftar-artikel', active: true },
-  ];
+  // const breadcrumbItems = [
+  //   { label: 'Beranda', href: '/dashboard', active: false },
+  //   { label: 'Daftar Artikel', href: '/daftar-artikel', active: true },
+  // ];
 
   const handleDelete = async (id) => {
     try {
@@ -76,7 +76,7 @@ function ArticleListPage() {
         {/* Breadcrumbs */}
         <Row className="my-4">
           <Col>
-            <Breadcrumbs items={breadcrumbItems} />
+            {/* <Breadcrumbs items={breadcrumbItems} /> */}
           </Col>
         </Row>
 
