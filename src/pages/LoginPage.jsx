@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Container, Form, Row, Col } from 'react-bootstrap';
-import { FcGoogle } from 'react-icons/fc';
 import axios from 'axios';
-// import logoYayasan from '../assets/logoYayasan.jpg';
 
 function LoginPage() {
   const [data, setData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -15,64 +14,70 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic validation
+    if (!data.email || !data.password) {
+      setError('Email dan password tidak boleh kosong.');
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
     try {
-      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth`;
+      const url = `${import.meta.env.VITE_BASE_URL}/api/vt3/auth`; // Ensure correct endpoint
       const response = await axios.post(url, data);
-      console.log('Full API response:', response);
 
-      // Extract the token, user data, and role from response
-      const res = response.data;
+      // Extract token, user data, and role from the response
+      const { token, user } = response.data;
 
-      // Store the token, user details, and role in localStorage
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('firstName', res.user.firstName);
-      localStorage.setItem('lastName', res.user.lastName);
-      localStorage.setItem('role', res.user.role); // Store the role
-      localStorage.setItem('id', res.user.id); // Store the id
+      // Store token and user details in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('firstName', user.firstName);
+      localStorage.setItem('lastName', user.lastName);
+      localStorage.setItem('role', user.role);
+      localStorage.setItem('id', user.id);
 
       // Redirect to the dashboard
       window.location = '/dashboard';
     } catch (error) {
-      console.error('Error occurred:', error);
-      if (
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status <= 500
-      ) {
-        setError(error.response.data.message);
+      console.error('Login failed:', error);
+
+      if (error.response && error.response.status === 401) {
+        setError('Email atau password salah.');
+      } else {
+        setError('Terjadi kesalahan. Silakan coba lagi.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container fluid className="vh-100 d-flex align-items-center justify-content-center bg-light">
       <Row className="shadow-lg rounded-4 overflow-hidden" style={{ maxWidth: '900px', width: '100%' }}>
-        {/* Bagian Kiri - Gambar dan Informasi */}
+        {/* Left Side - Welcome Section */}
         <Col md={6} className="d-none d-md-block bg-primary text-white p-5">
           <div className="d-flex flex-column align-items-center justify-content-center h-100">
-            {/* <img
-              src={logoYayasan}
-              alt="Be Verified"
-              className="img-fluid mb-4"
-            /> */}
-            <h2 className="fw-bold">Silahkan Masuk</h2>
-            <p className="text-center"></p>
+            <h2 className="fw-bold">Selamat Datang</h2>
+            <p>Silakan masuk untuk melanjutkan ke dashboard</p>
           </div>
         </Col>
 
-        {/* Bagian Kanan - Form Login */}
+        {/* Right Side - Login Form */}
         <Col md={6} className="bg-white p-5">
           <div className="text-center mb-4">
             <h2 className="fw-bold">Jumpa Lagi</h2>
-            <p className="text-muted">Kami senang anda kembali lagi</p>
+            <p className="text-muted">Kami senang Anda kembali</p>
           </div>
 
           <Form onSubmit={handleSubmit}>
+            {/* Email Field */}
             <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter email"
+                placeholder="Masukkan email"
                 name="email"
                 value={data.email}
                 onChange={handleChange}
@@ -80,11 +85,12 @@ function LoginPage() {
               />
             </Form.Group>
 
+            {/* Password Field */}
             <Form.Group className="mb-3" controlId="formPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Enter password"
+                placeholder="Masukkan password"
                 name="password"
                 value={data.password}
                 onChange={handleChange}
@@ -92,32 +98,21 @@ function LoginPage() {
               />
             </Form.Group>
 
-            {error && <div className="alert alert-danger">{error}</div>}
+            {/* Error Message */}
+            {error && <div className="alert alert-danger text-center">{error}</div>}
 
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <Form.Check type="checkbox" label="Ingat Password" />
-              {/* <Link to="/forgot-password" className="text-decoration-none">
-                Forgot Password?
-              </Link> */}
-            </div>
-
-            <div className="d-grid gap-2">
-              <Button type="submit" variant="primary" className="mb-2">
-                Masuk
+            {/* Submit Button */}
+            <div className="d-grid">
+              <Button type="submit" variant="primary" disabled={loading}>
+                {loading ? 'Memproses...' : 'Masuk'}
               </Button>
-
-              {/* <Button variant="outline-secondary" className="d-flex align-items-center justify-content-center">
-                <FcGoogle className="me-2" />
-                Sign In with Google
-              </Button> */}
             </div>
           </Form>
 
           <div className="text-center mt-3">
-            {/* <span>Don't have an account? </span> */}
-            {/* <Link to="/signup" className="text-decoration-none fw-bold">
-              Sign Up
-            </Link> */}
+            <p className="text-muted">
+              {/* Placeholder for future links */}
+            </p>
           </div>
         </Col>
       </Row>
