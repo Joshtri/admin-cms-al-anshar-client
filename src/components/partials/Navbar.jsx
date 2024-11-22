@@ -1,11 +1,15 @@
-// import React from 'react'
 import { NavLink, Link } from 'react-router-dom';
 import { NavDropdown } from 'react-bootstrap';
-// import { useEffect, useState } from 'react';
 
 function Navbar() {
+  // Fungsi untuk menangani logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
-   <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/dashboard">
           CMS | Masjid Al-Anshar
@@ -29,42 +33,49 @@ function Navbar() {
                 Dashboard
               </NavLink>
             </li>
-
-            
-            {/* <li className="nav-item">
-              <NavLink className="nav-link" activeClassName="active" to="/posted-article">
-                Posting Artikel
-              </NavLink>
-            </li> */}
-            
-
-           
-            <NavDropdown title='Data' id="basic-nav-dropdown">
-                <NavDropdown.Item as={NavLink} to="/daftar-artikel">
-                    Data Artikel
-                </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="/data-pengumuman">
-                    Data Pengumuman
-                </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="/daftar-galeri">
-                    Galeri Kegiatan
-                </NavDropdown.Item>
+            <NavDropdown title="Data" id="basic-nav-dropdown">
+              <NavDropdown.Item as={NavLink} to="/daftar-artikel">
+                Data Artikel
+              </NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/data-pengumuman">
+                Data Pengumuman
+              </NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/daftar-galeri">
+                Galeri Kegiatan
+              </NavDropdown.Item>
             </NavDropdown>
-            
           </ul>
 
-          {/* Right side logout button */}
+          {/* Right side: Profil dropdown */}
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              {/* <button className='btn btn-danger' onClick={handleLogout}>
+            <NavDropdown
+              title={
+                <>
+                  <img
+                    src="https://via.placeholder.com/30"
+                    alt="User Avatar"
+                    className="rounded-circle me-2"
+                    style={{ width: "30px", height: "30px" }}
+                  />
+                  <span>Profil</span>
+                </>
+              }
+              id="profile-dropdown"
+              align="end"
+            >
+              {/* <NavDropdown.Item as={NavLink} to="/profil">
+                Lihat Profil
+              </NavDropdown.Item> */}
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={handleLogout}>
                 Logout
-              </button> */}
-            </li>
+              </NavDropdown.Item>
+            </NavDropdown>
           </ul>
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
