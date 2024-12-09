@@ -30,7 +30,7 @@ function App() {
           <Route path='/' element={<LoginPage/>}/>
 
 
-          <Route path='/daftar-artikel' element={<ProtectedRoute element={ArticleAddPage} allowedRoles={['admin']}/>}/>
+          <Route path='/daftar-artikel' element={<ProtectedRoute element={ArticleListPage} allowedRoles={['admin']}/>}/>
           <Route path='/tambah-artikel' element={<ProtectedRoute element={ArticleAddPage} allowedRoles={['admin']}/>}/>
           <Route path='/artikel/:id' element={<ProtectedRoute element={ArticleDetailPage} allowedRoles={['admin']}/>}/>
           <Route path='/artikel/edit/:id' element={<ProtectedRoute element={ArticleEditPage} allowedRoles={['admin']}/>}/>
