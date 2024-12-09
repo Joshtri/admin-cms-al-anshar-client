@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Container, Form, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
+import api from '../config/api'; // Import instance Axios
 
 function LoginPage() {
   const [data, setData] = useState({ email: '', password: '' });
@@ -24,12 +24,9 @@ function LoginPage() {
     setError('');
     setLoading(true);
 
-
-    
-
     try {
-      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth`; // Ensure correct endpoint
-      const response = await axios.post(url, data);
+      // Gunakan instance Axios (api)
+      const response = await api.post('/auth', data);
 
       // Extract token, user data, and role from the response
       const { token, user } = response.data;
@@ -46,8 +43,6 @@ function LoginPage() {
     } catch (error) {
       console.error('Login failed:', error);
 
-      
-
       if (error.response && error.response.status === 401) {
         setError('Email atau password salah.');
       } else {
@@ -61,8 +56,6 @@ function LoginPage() {
       } else {
         console.error("Error Message: ", error.message);
       }
-
-      
     } finally {
       setLoading(false);
     }
