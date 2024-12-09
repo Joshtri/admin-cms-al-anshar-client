@@ -24,6 +24,9 @@ function LoginPage() {
     setError('');
     setLoading(true);
 
+
+    
+
     try {
       const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth`; // Ensure correct endpoint
       const response = await axios.post(url, data);
@@ -43,11 +46,23 @@ function LoginPage() {
     } catch (error) {
       console.error('Login failed:', error);
 
+      
+
       if (error.response && error.response.status === 401) {
         setError('Email atau password salah.');
       } else {
         setError('Terjadi kesalahan. Silakan coba lagi.');
       }
+
+      if (error.response) {
+        console.error("Error Response Data: ", error.response.data);
+        console.error("Error Response Status: ", error.response.status);
+        console.error("Error Response Headers: ", error.response.headers);
+      } else {
+        console.error("Error Message: ", error.message);
+      }
+
+      
     } finally {
       setLoading(false);
     }
