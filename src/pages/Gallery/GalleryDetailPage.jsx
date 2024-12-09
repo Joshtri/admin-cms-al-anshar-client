@@ -54,24 +54,27 @@ function GalleryDetailPage() {
 
   return (
     <Layout>
-      {/* Breadcrumbs */}
-      <Row className="my-3">
-        <Col>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
-            <Breadcrumb.Item href="/daftar-galeri">Daftar Galeri</Breadcrumb.Item>
-            <Breadcrumb.Item active>Detail Galeri</Breadcrumb.Item>
-          </Breadcrumb>
-        </Col>
-      </Row>
+        {/* Breadcrumbs */}
+        <Row className="my-4">
+          <Col>
+            <Breadcrumb>
+              <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+              <Breadcrumb.Item href="/daftar-galeri">Daftar Galeri</Breadcrumb.Item>
+              <Breadcrumb.Item active>Detail Galeri</Breadcrumb.Item>
+            </Breadcrumb>
+          </Col>
+        </Row>
 
-      {/* Header */}
-      <Row className="mb-4">
-        <Col>
-          <h3 className="text-center">Detail Galeri</h3>
+        {/* Header */}
+        <Row className="mb-4">
+          <Col className="d-flex align-items-center justify-content-between">
+            <Button variant="secondary" onClick={() => navigate('/daftar-galeri')}>
+              Kembali
+            </Button>
+          </Col>
+          <h3 className="text-center mt-3">Detail Galeri</h3>
           <hr />
-        </Col>
-      </Row>
+        </Row>
 
       {/* Detail Galeri */}
       <Row className="justify-content-center">

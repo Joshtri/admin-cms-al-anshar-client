@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Spinner, Alert, Row, Col, Breadcrumb } from 'react-bootstrap';
 import Layout from '../Layout';
 
 function PengumumanEditPage() {
@@ -86,8 +86,28 @@ function PengumumanEditPage() {
   return (
     <Layout>
 
+      <Row className="my-4">
+        <Col>
+          <Breadcrumb>
+            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+            <Breadcrumb.Item href="/data-pengumuman">Daftar Pengumuman</Breadcrumb.Item>
+            <Breadcrumb.Item active>Tambah Pengumuman</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
 
-      <h1 className="text-center mb-4">Edit Pengumuman</h1>
+      <Row className="mb-4">
+        <Col className="d-flex align-items-center justify-content-between">
+          <Button variant="secondary" onClick={() => navigate('/daftar-artikel')}>
+            Kembali
+          </Button>
+        </Col>
+        <h3 className="text-center mt-3">Edit Pengumuman</h3>
+        <hr />
+      </Row>
+
+
+      {/* <h1 className="text-center mb-4">Edit Pengumuman</h1> */}
       {loading ? (
         <div className="d-flex justify-content-center">
           <Spinner animation="border" />

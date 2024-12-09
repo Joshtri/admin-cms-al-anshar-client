@@ -3,16 +3,24 @@ import { Container, Row, Col, Alert } from 'react-bootstrap';
 import DashboardCard from './DashboardCard';
 import { AiOutlineUser, AiOutlineShoppingCart } from 'react-icons/ai';
 import { FaRegChartBar } from 'react-icons/fa';
+import axios from 'axios';
 
 function DashboardContent() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [role, setRole] = useState('');
 
+  // State untuk menyimpan data total
+  const [totals, setTotals] = useState({
+    articles: 0,
+    announcements: 0,
+    galleries: 0,
+  });
+
   const cards = [
-    { title: 'Artikel', content: 'Memiliki 1 Artikel', Icon: AiOutlineUser },
-    { title: 'Pengumuman', content: 'Memiliki 1 Pengumuman', Icon: AiOutlineShoppingCart },
-    { title: 'Galeri', content: 'Memiliki 12 galeri.', Icon: FaRegChartBar },
+    { title: 'Artikel', content: `Memiliki ${totals.articles} Artikel`, Icon: AiOutlineUser },
+    { title: 'Pengumuman', content: `Memiliki ${totals.announcements} Pengumuman`, Icon: AiOutlineShoppingCart },
+    { title: 'Galeri', content: `Memiliki ${totals.galleries} Galeri`, Icon: FaRegChartBar },
   ];
 
   useEffect(() => {
@@ -28,6 +36,27 @@ function DashboardContent() {
     } else {
       console.error('User data not found in localStorage');
     }
+
+    // Fetch data totals
+    const fetchTotals = async () => {
+      try {
+        const [articleRes, announcementRes, galleryRes] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/article/count`),
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/pengumuman/total`),
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri/count`),
+        ]);
+
+        setTotals({
+          articles: articleRes.data.data.total || 0,
+          announcements: announcementRes.data.data.total || 0,
+          galleries: galleryRes.data.data.total || 0,
+        });
+      } catch (error) {
+        console.error('Failed to fetch totals:', error);
+      }
+    };
+
+    fetchTotals();
   }, []);
 
   return (

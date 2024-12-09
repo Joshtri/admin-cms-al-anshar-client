@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner, Alert, Breadcrumb } from 'react-bootstrap';
 import Layout from '../Layout';
 import axios from 'axios';
 
@@ -89,11 +89,26 @@ function GalleryEditPage() {
   return (
     <Layout>
       <Container>
+        {/* Breadcrumbs */}
         <Row className="my-4">
           <Col>
-            <h3 className="text-center">Edit Galeri</h3>
-            <hr />
+            <Breadcrumb>
+              <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+              <Breadcrumb.Item href="/daftar-galeri">Daftar Galeri</Breadcrumb.Item>
+              <Breadcrumb.Item active>Tambah Galeri Baru</Breadcrumb.Item>
+            </Breadcrumb>
           </Col>
+        </Row>
+
+        {/* Header */}
+        <Row className="mb-4">
+          <Col className="d-flex align-items-center justify-content-between">
+            <Button variant="secondary" onClick={() => navigate('/daftar-galeri')}>
+              Kembali
+            </Button>
+          </Col>
+          <h3 className="text-center mt-3">Tambah Galeri Baru</h3>
+          <hr />
         </Row>
 
         {loading ? (

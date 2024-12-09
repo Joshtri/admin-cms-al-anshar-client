@@ -72,16 +72,25 @@ function ArticleAddPage() {
   return (
     <Layout>
       <Container>
-        {/* Breadcrumbs */}
-        <Row className="my-4">
-          <Col>
-            <Breadcrumb>
-              <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
-              <Breadcrumb.Item href="/daftar-artikel">Daftar Artikel</Breadcrumb.Item>
-              <Breadcrumb.Item active>Tambah Artikel Baru</Breadcrumb.Item>
-            </Breadcrumb>
-          </Col>
-        </Row>
+      <Row className="my-4">
+        <Col>
+          <Breadcrumb>
+            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+            <Breadcrumb.Item href="/daftar-artikel">Daftar Artikel</Breadcrumb.Item>
+            <Breadcrumb.Item active>Tambah Artikel</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
+
+      <Row className="mb-4">
+        <Col className="d-flex align-items-center justify-content-between">
+          <Button variant="secondary" onClick={() => navigate('/daftar-artikel')}>
+            Kembali
+          </Button>
+        </Col>
+        <h3 className="text-center mt-3">Detail Artikel</h3>
+        <hr />
+      </Row>
 
         {/* Form */}
         <Row>

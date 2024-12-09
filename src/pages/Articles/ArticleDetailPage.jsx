@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Row, Col, Breadcrumb } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Row, Col, Breadcrumb, Button } from 'react-bootstrap';
 import Layout from '../Layout';
 import api from '../../config/api'; // Import Axios instance
 
@@ -9,6 +9,8 @@ function ArticleDetailPage() {
   const [article, setArticle] = useState(null); // State untuk artikel
   const [loading, setLoading] = useState(true); // State loading
   const [error, setError] = useState(null); // State error
+  const navigate = useNavigate(); // Untuk navigasi kembali
+
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -49,7 +51,7 @@ function ArticleDetailPage() {
 
   return (
     <Layout>
-      <Row className="my-3">
+      <Row className="my-4">
         <Col>
           <Breadcrumb>
             <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
@@ -59,6 +61,15 @@ function ArticleDetailPage() {
         </Col>
       </Row>
 
+      <Row className="mb-4">
+        <Col className="d-flex align-items-center justify-content-between">
+          <Button variant="secondary" onClick={() => navigate('/daftar-artikel')}>
+            Kembali
+          </Button>
+        </Col>
+        <h3 className="text-center mt-3">Detail Artikel</h3>
+        <hr />
+      </Row>
       <Row>
         <Col md={8} className="mx-auto">
           <div className="border rounded p-4 shadow-sm">
