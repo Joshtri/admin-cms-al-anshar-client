@@ -32,7 +32,7 @@ function LoginPage() {
         url,
         data,
         {
-          withCredentials: true, // Enable sending cookies
+          // withCredentials: true, // Enable sending cookies
           headers: {
             "Content-Type": "application/json", // Set content type
           },
