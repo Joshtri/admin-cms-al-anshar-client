@@ -25,7 +25,7 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const url = `${import.meta.env.VITE_BASE_URL}/api/vt3/auth`; // Ensure correct endpoint
+      const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth`; // Ensure correct endpoint
       const response = await axios.post(url, data);
 
       // Extract token, user data, and role from the response
