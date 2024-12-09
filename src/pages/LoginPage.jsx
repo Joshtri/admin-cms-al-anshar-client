@@ -26,7 +26,19 @@ function LoginPage() {
 
     try {
       const url = `${import.meta.env.VITE_BASE_URL}/api/v1/auth`; // Ensure correct endpoint
-      const response = await axios.post(url, data);
+
+      // Axios POST request with credentials and headers
+      const response = await axios.post(
+        url,
+        data,
+        {
+          withCredentials: true, // Enable sending cookies
+          headers: {
+            "Content-Type": "application/json", // Set content type
+          },
+        }
+      );
+
 
       // Extract token, user data, and role from the response
       const { token, user } = response.data;
