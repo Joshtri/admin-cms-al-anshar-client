@@ -39,7 +39,6 @@ function LoginPage() {
         }
       );
 
-
       // Extract token, user data, and role from the response
       const { token, user } = response.data;
 
