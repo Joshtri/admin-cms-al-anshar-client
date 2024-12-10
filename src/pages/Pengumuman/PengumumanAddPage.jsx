@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Layout from '../Layout';
 import axios from 'axios';
@@ -16,6 +16,9 @@ function PengumumanAddPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [showModal, setShowModal] = useState(false);
+  const [fileName, setFileName] = useState('');
+
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleInputChange = (e) => {
@@ -27,10 +30,19 @@ function PengumumanAddPage() {
   };
 
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      berkas_pengumuman_pdf: e.target.files[0],
-    });
+    const file = e.target.files[0];
+    if (file) {
+      const maxSize = 1 * 1024 * 1024; // 1MB in bytes
+      if (file.size > maxSize) {
+        setFileName(file.name); // Set file name for modal
+        setShowModal(true); // Show the modal
+        return;
+      }
+      setFormData({
+        ...formData,
+        berkas_pengumuman_pdf: file,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -115,6 +127,34 @@ function PengumumanAddPage() {
             {loading ? 'Menyimpan...' : 'Simpan Pengumuman'}
           </Button>
         </Form>
+
+        {/* Modal Notification */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>File Melebihi Batas</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              File <strong>{fileName}</strong> melebihi batas ukuran maksimal 1 MB.
+            </p>
+            <p>
+              Silakan gunakan situs seperti{' '}
+              <a
+                href="https://www.ilovepdf.com/compress_pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                iLovePDF
+              </a>{' '}
+              untuk memperkecil ukuran file PDF Anda.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </Layout>
   );
