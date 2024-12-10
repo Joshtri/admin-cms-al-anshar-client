@@ -41,9 +41,9 @@ function DashboardContent() {
     const fetchTotals = async () => {
       try {
         const [articleRes, announcementRes, galleryRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/article/count`),
-          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/pengumuman/total`),
-          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri/count`),
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/article-count`),
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/pengumuman-total`),
+          axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/galeri-count`),
         ]);
 
         setTotals({
