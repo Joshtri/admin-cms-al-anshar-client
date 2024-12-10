@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Breadcrumb } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Breadcrumb, Modal } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -16,6 +16,8 @@ function ArticleAddPage() {
   });
   const [coverImage, setCoverImage] = useState(null); // Untuk cover image
   const [loading, setLoading] = useState(false); // Indikator loading
+  const [showModal, setShowModal] = useState(false); // Untuk notifikasi modal
+  const [fileName, setFileName] = useState(''); // Nama file yang terlalu besar
 
   // Handle perubahan input teks
   const handleInputChange = (e) => {
@@ -36,7 +38,16 @@ function ArticleAddPage() {
 
   // Handle perubahan file
   const handleFileChange = (e) => {
-    setCoverImage(e.target.files[0]);
+    const file = e.target.files[0];
+    const maxSize = 500 * 1024; // 500 KB in bytes
+
+    if (file && file.size > maxSize) {
+      setFileName(file.name); // Set nama file untuk modal
+      setShowModal(true); // Tampilkan modal
+      return;
+    }
+
+    setCoverImage(file); // Set file jika ukurannya sesuai
   };
 
   // Handle submit form
@@ -72,25 +83,25 @@ function ArticleAddPage() {
   return (
     <Layout>
       <Container>
-      <Row className="my-4">
-        <Col>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
-            <Breadcrumb.Item href="/daftar-artikel">Daftar Artikel</Breadcrumb.Item>
-            <Breadcrumb.Item active>Tambah Artikel</Breadcrumb.Item>
-          </Breadcrumb>
-        </Col>
-      </Row>
+        <Row className="my-4">
+          <Col>
+            <Breadcrumb>
+              <Breadcrumb.Item href="/dashboard">Beranda</Breadcrumb.Item>
+              <Breadcrumb.Item href="/daftar-artikel">Daftar Artikel</Breadcrumb.Item>
+              <Breadcrumb.Item active>Tambah Artikel</Breadcrumb.Item>
+            </Breadcrumb>
+          </Col>
+        </Row>
 
-      <Row className="mb-4">
-        <Col className="d-flex align-items-center justify-content-between">
-          <Button variant="secondary" onClick={() => navigate('/daftar-artikel')}>
-            Kembali
-          </Button>
-        </Col>
-        <h3 className="text-center mt-3">Detail Artikel</h3>
-        <hr />
-      </Row>
+        <Row className="mb-4">
+          <Col className="d-flex align-items-center justify-content-between">
+            <Button variant="secondary" onClick={() => navigate('/daftar-artikel')}>
+              Kembali
+            </Button>
+          </Col>
+          <h3 className="text-center mt-3">Detail Artikel</h3>
+          <hr />
+        </Row>
 
         {/* Form */}
         <Row>
@@ -164,6 +175,34 @@ function ArticleAddPage() {
             </Form>
           </Col>
         </Row>
+
+        {/* Modal Notification */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>File Melebihi Batas</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              File <strong>{fileName}</strong> melebihi batas ukuran maksimal 500 KB.
+            </p>
+            <p>
+              Silakan gunakan situs seperti{' '}
+              <a
+                href="https://www.iloveimg.com/compress-image"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                iLoveIMG
+              </a>{' '}
+              untuk memperkecil ukuran gambar Anda.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </Layout>
   );
