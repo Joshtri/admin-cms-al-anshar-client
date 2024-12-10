@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Breadcrumb, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Breadcrumb, Spinner, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout';
 import api from '../../config/api'; // Import Axios instance
@@ -16,6 +16,8 @@ function GalleryAddPage() {
 
   const [imageGaleri, setImageGaleri] = useState(null);
   const [loading, setLoading] = useState(false); // State untuk loading
+  const [showModal, setShowModal] = useState(false); // State untuk modal
+  const [fileName, setFileName] = useState(''); // Nama file yang terlalu besar
 
   // Handle perubahan input teks
   const handleInputChange = (e) => {
@@ -28,7 +30,16 @@ function GalleryAddPage() {
 
   // Handle perubahan input file
   const handleFileChange = (e) => {
-    setImageGaleri(e.target.files[0]);
+    const file = e.target.files[0];
+    const maxSize = 500 * 1024; // 500 KB in bytes
+
+    if (file && file.size > maxSize) {
+      setFileName(file.name); // Set nama file untuk modal
+      setShowModal(true); // Tampilkan modal
+      return;
+    }
+
+    setImageGaleri(file); // Set file jika ukurannya sesuai
   };
 
   // Handle submit formulir
@@ -171,6 +182,34 @@ function GalleryAddPage() {
             </Form>
           </Col>
         </Row>
+
+        {/* Modal Notification */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>File Melebihi Batas</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              File <strong>{fileName}</strong> melebihi batas ukuran maksimal 500 KB.
+            </p>
+            <p>
+              Silakan gunakan situs seperti{' '}
+              <a
+                href="https://www.iloveimg.com/compress-image"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                iLoveIMG
+              </a>{' '}
+              untuk memperkecil ukuran gambar Anda.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </Layout>
   );
